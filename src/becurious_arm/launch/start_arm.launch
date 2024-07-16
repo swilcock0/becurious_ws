@@ -1,0 +1,13 @@
+<launch>
+    <include file="$(find turtlebot_arm_bringup)/launch/arm.launch" />
+
+    <include file="$(find turtlebot_arm_moveit_config)/launch/turtlebot_arm_moveit.launch">
+        <arg name="sim" value="false"/>
+    </include>
+
+    <include file="$(find my_camera)/launch/bringup_webcam_apriltag.launch">
+        <arg name="view" value="false" />
+    </include>
+
+    <node name="tf_stat_webcam_arm" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 arm_base_link map 100" />
+</launch>

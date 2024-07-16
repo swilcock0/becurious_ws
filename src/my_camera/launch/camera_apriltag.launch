@@ -1,0 +1,46 @@
+<launch>
+   <arg name="view" default="true" />
+   <!-- launch video stream -->
+   <include file="$(find video_stream_opencv)/launch/camera.launch" >
+        <!-- node name and ros graph name -->
+        <arg name="camera_name" value="webcam" />
+        <!-- means video device 0, /dev/video0 -->
+        <arg name="video_stream_provider" value="0" />
+        <!-- set camera fps to (if the device allows) -->
+        <arg name="set_camera_fps" value="30"/>
+        <!-- set buffer queue size of frame capturing to -->
+        <arg name="buffer_queue_size" value="100" />
+        <!-- throttling the querying of frames to -->
+        <arg name="fps" value="10" />
+        <!-- setting frame_id -->
+        <arg name="frame_id" value="webcam" />
+        <!-- camera info loading, take care as it needs the "file:///" at the start , e.g.:
+        "file:///$(find your_camera_package)/config/your_camera.yaml" -->
+        <arg name="camera_info_url" value="file:///$(find my_camera)/config/webcam.yaml" />
+        <!-- flip the image horizontally (mirror it) -->
+        <arg name="flip_horizontal" value="false" />
+        <!-- flip the image vertically -->
+        <arg name="flip_vertical" value="false" />
+        <!-- visualize on an image_view window the stream generated -->
+        <arg name="visualize" value="false" />
+
+        <arg name="width" value="1920" />
+        <arg name="height" value="1080" />
+   </include>
+
+   <include file="$(find my_camera)/launch/apriltags_continuous.launch">
+        <arg name="camera_name" value="webcam" />
+        <arg name="image_topic" value="image_raw" />
+    </include>
+   
+   <node name="tf_stat_webcam" pkg="tf" type="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 map webcam 100" />
+   <!-- <node name="tf_stat_robot" pkg="tf" type="static_transform_publisher" args="0.2205 0.2205 0.4305 1.508 0.0 0.0 world Robot 100" /> -->
+   <node name="webcam_apriltags_image_view" pkg="image_view" type="image_view" args="image:=/tag_detections_image" />
+
+   <!-- <node name="webcam_transformer" pkg="my_camera" type="webcam_transforms.py" output="screen">
+     <remap from="tf" to="tf_apriltags" />
+   </node> -->
+
+   <!-- <node name="transforms_passthru" pkg="my_camera" type="transforms_passthru.py" output="screen" /> -->
+   <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="true" args="-d $(find my_camera)/rviz/apriltag_view.rviz" output="screen" required="false" if="$(eval arg('view'))" />
+</launch>

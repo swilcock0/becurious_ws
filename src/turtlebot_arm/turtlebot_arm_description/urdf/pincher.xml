@@ -1,0 +1,6 @@
+<robot file="pincher.dae">
+  <Manipulator name="pincher">
+    <base>arm_base_link</base>
+    <effector>gripper_link</effector>
+  </Manipulator>
+</robot>

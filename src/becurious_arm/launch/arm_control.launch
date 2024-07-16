@@ -1,0 +1,5 @@
+<launch>
+    <!-- <node name="gesture_capture" pkg="gesture_teleop" type="detect.py" /> -->
+    <node name="gripper_apriltag_control" pkg="becurious_arm" type="gripper_tag_control.py" />
+    <!-- <node name="gesture_control" pkg="becurious_arm" type="gesture_control.py" /> TODO write -->
+</launch>
